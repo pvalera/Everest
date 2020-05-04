@@ -43,6 +43,7 @@ import com.rohitawate.everest.sync.SyncManager;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -51,6 +52,8 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import org.fxmisc.flowless.VirtualizedScrollPane;
@@ -399,6 +402,20 @@ public class DashboardController implements Initializable {
         prettifyResponseBody(response);
         statusCode.setText(Integer.toString(response.getStatusCode()));
         statusCodeDescription.setText(EverestResponse.getReasonPhrase(response.getStatusCode()));
+        // set text fill colors for statusCodes 200 and 404
+        if (statusCode.getText().equals("200")) {
+        	statusCode.setStyle("-fx-text-fill: green;");
+        	statusCodeDescription.setStyle("-fx-text-fill: green;");
+        }
+        else if (statusCode.getText().equals("404")) {
+        	statusCode.setStyle("-fx-text-fill: red;");
+        	statusCodeDescription.setStyle("-fx-text-fill: red;");
+        }
+        else {
+        	statusCode.setStyle("-fx-text-fill: white;");
+        	statusCodeDescription.setStyle("-fx-text-fill: white;");
+        }
+        
         responseTime.setText(Long.toString(response.getTime()) + " ms");
         responseSize.setText(Integer.toString(response.getSize()) + " B");
         responseHeadersViewer.populate(response);
@@ -860,5 +877,14 @@ public class DashboardController implements Initializable {
     public String getHttpMethod() {
         return httpMethodBox.getValue();
     }
-
+    
+    // Enable Copy Button to copy text from BODY tab to Clipboard
+    @FXML
+    void copyBodyText(ActionEvent event) {
+    	String toClipBoardText = responseArea.getText();
+    	Clipboard clipboard = Clipboard.getSystemClipboard();
+        ClipboardContent content = new ClipboardContent();
+        content.putString(toClipBoardText);
+        clipboard.setContent(content);
+  }
 }
