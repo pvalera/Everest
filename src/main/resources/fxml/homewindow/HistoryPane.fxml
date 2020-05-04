@@ -140,4 +140,5 @@
 			</children>
 		</StackPane>
 	</children>
+	<Button fx:id="clearHistoryButton" mnemonicParsing="false" onAction="#clearHistory" text="Clear History" />
 </VBox>
