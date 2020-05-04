@@ -34,6 +34,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -47,6 +50,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class HomeWindowController implements Initializable {
@@ -208,11 +212,21 @@ public class HomeWindowController implements Initializable {
         newTab.setOnCloseRequest(e -> {
             removeTab(newTab);
 
+            
             // Closes the application if the last tab is closed
             if (tabPane.getTabs().size() == 0) {
-                saveState();
-                Stage thisStage = (Stage) homeWindowSP.getScene().getWindow();
-                thisStage.close();
+            	// alert if user wants to close application
+                Alert alert = new Alert(AlertType.CONFIRMATION);
+                alert.setTitle("Confirmation Dialog");
+                alert.setHeaderText("Closing the last tab will exit the application");
+                alert.setContentText("Do you want to close the application?");
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK){
+                    saveState();
+                    Stage thisStage = (Stage) homeWindowSP.getScene().getWindow();
+                    thisStage.close();
+                }
             }
         });
     }
